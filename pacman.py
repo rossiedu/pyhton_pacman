@@ -10,6 +10,7 @@ tela = pygame.display.set_mode((640,480),0)
 while True:
     # Regras
     # Cores
+    ## Desenhando o pacman
     pygame.draw.circle(
         surface = tela,
         color = yellow,
