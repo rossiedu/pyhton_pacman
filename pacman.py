@@ -1,4 +1,5 @@
 # Preparando o ambiente
+from turtle import screensize
 import pygame
 pygame.init()
 
@@ -32,21 +33,26 @@ class create_screen():
 
 
 class pacman():
-    def __init__(self,tamanho,screen,surface,color):
-        self.tamanho = tamanho
+    def __init__(self,size,screen,surface,color):
+        self.size = size
         self.x_center = screen.pacman_center_x()
         self.y_center = screen.pacman_center_y()
         self.background_color = screen.background_color()
         self.screen = screen
         self.surface = surface
         self.color = color
-        self.radius = int(tamanho / 2)
+        self.radius = int(size / 2)
         self.velocity_x = 0.4
         self.velocity_y = 0.4
+        self.column = 1
+        self.line = 1
 
     def movement_rules(self):
-        self.x_center = self.x_center + self.velocity_x
-        self.y_center = self.y_center + self.velocity_y
+        self.column += self.velocity_x
+        self.line  += self.velocity_y
+        self.matrix_size = screen.width // 30
+        self.x_center = int(self.column * self.matrix_size + self.radius)
+        self.y_center = int(self.line * self.matrix_size)
 
         if self.x_center + self.radius > screen.width:
             self.velocity_x -= 0.4
