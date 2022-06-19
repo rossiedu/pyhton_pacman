@@ -2,20 +2,48 @@
 import pygame
 pygame.init()
 
+
+# Declarando as variaveis
+## Variaveis de tela
+height = 480
+width = 640
+## Variaveis do pacman
 yellow = (255,255,0)
-# Definindo o tamanho da janela do jogo (altura, largura)
-tela = pygame.display.set_mode((640,480),0)
+black = (0,0,0)
+radius = 30
+x = 10
+y = 10
+velocity = 0.3
+velocity_x = velocity
+velocity_y = velocity
+
+## Definindo o tamanho da janela do jogo (largura, altura)
+tela = pygame.display.set_mode((width,height),0)
 
 # Criando um looping para que a janela fique aberta até ser fechada
 while True:
     # Regras
+    x += velocity_x
+    y += velocity_y
+
+    if x + radius > width:
+        velocity_x = -velocity
+    if x - radius < 0:
+        velocity_x = velocity
+    if y + radius > height:
+        velocity_y = -velocity
+    if y - radius  < 0:
+        velocity_y = velocity
+
     # Cores
+    ## Pintando a tela de preto
+    tela.fill(black)
     ## Desenhando o pacman
     pygame.draw.circle(
         surface = tela,
         color = yellow,
-        center = (320,240),
-        radius = 50,
+        center = (int(x),int(y)),
+        radius = radius,
         width = 0
     )
     pygame.display.update()
