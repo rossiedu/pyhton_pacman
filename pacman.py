@@ -28,6 +28,7 @@ class create_screen():
     def background_color(self):
         color = self.RGB
         return color
+    
 
 
 class pacman():
@@ -39,8 +40,25 @@ class pacman():
         self.screen = screen
         self.surface = surface
         self.color = color
-        self.radius = tamanho / 2
+        self.radius = int(tamanho / 2)
+        self.velocity_x = 0.4
+        self.velocity_y = 0.4
 
+    def movement_rules(self):
+        self.x_center = self.x_center + self.velocity_x
+        self.y_center = self.y_center + self.velocity_y
+
+        if self.x_center + self.radius > screen.width:
+            self.velocity_x -= 0.4
+
+        if self.x_center - self.radius < 0:
+            self.velocity_x += 0.4
+        if self.y_center + self.radius > screen.height:
+            self.velocity_y -= 0.4
+
+        if self.y_center - self.radius < 0:
+            self.velocity_y += 0.4
+            
     def draw_circle(self):
         surface = self.surface
         color = self.color
@@ -51,7 +69,6 @@ class pacman():
         return circle
     
     def draw_polygon(self):
-       color_black = (0,0,0)
        point_one = (self.x_center,self.y_center)
        point_two = (self.x_center + self.radius, self.y_center - self.radius)
        point_three = (self.x_center + self.radius, self.y_center)
@@ -63,10 +80,14 @@ class pacman():
     def draw_small_circle(self):
         surface = self.surface
         color = (0,0,0)
-        radius = int(self.radius / 10)
-        x_center = int(self.x_center + (self.radius / 2))
-        y_center = int(self.y_center - (self.radius / 2))
+        radius = int(self.radius / 8)
+        x_center = int(self.x_center + (self.radius / 3))
+        y_center = int(self.y_center - (self.radius * 0.70))
         small_circle = pygame.draw.circle(surface,color,(x_center,y_center),radius,0)
         return small_circle
 
-    
+    def draw_pacman(self):
+        body = pacman.draw_circle()
+        mounth = pacman.draw_polygon()
+        eye = pacman.draw_small_circle()
+        return body,mounth,eye
