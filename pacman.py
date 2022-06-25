@@ -32,7 +32,7 @@ class create_screen():
     
 
 
-class pacman():
+class PacMan():
     def __init__(self,size,screen,surface,color):
         self.size = size
         self.x_center = screen.pacman_center_x()
@@ -64,7 +64,7 @@ class pacman():
 
         if self.y_center - self.radius < 0:
             self.velocity_y += 0.4
-            
+           
     def draw_circle(self):
         surface = self.surface
         color = self.color
@@ -91,9 +91,24 @@ class pacman():
         y_center = int(self.y_center - (self.radius * 0.70))
         small_circle = pygame.draw.circle(surface,color,(x_center,y_center),radius,0)
         return small_circle
-
+    @classmethod
     def draw_pacman(self):
         body = pacman.draw_circle()
         mounth = pacman.draw_polygon()
         eye = pacman.draw_small_circle()
         return body,mounth,eye
+
+if __name__ =='__main__':
+    screen = create_screen(800,600,(0,0,0))
+    surface = screen.create_surface()
+    pacman = PacMan(50,screen,surface,(255,255,0))
+    while True:
+        pacman.movement_rules()
+        surface.fill((0,0,0))
+        pacman.draw_pacman()
+        pygame.display.update()
+        pygame.time.delay(100)
+        
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                exit()
