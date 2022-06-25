@@ -3,7 +3,8 @@ from turtle import screensize
 import pygame
 pygame.init()
 
-class create_screen():
+# Criando a classe para criar a tela do jogo
+class Screen():
     def __init__(self,width,height,rgb_color):
         self.width = width
         self.height = height
@@ -29,23 +30,117 @@ class create_screen():
     def background_color(self):
         color = self.RGB
         return color
+
+    def cenario_color(self):
+        complementary_color = []
+        for scale in self.RGB:
+            color = 255 - scale
+            complementary_color.append(color)
+        cenario_color = tuple(complementary_color)
+        return cenario_color
+
+
+# Criando a classe para desenhar o cenario
+
+class Cenario():
+    def __init__(self,screen,surface,pacman):
+        self.screen = screen
+        self. surface = surface
+        self.pacman = pacman
+        self.matrix = [
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+            [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2],
+            [2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2],
+            [2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2],
+            [2, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 0, 0, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2],
+            [2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2],
+            [2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2],
+            [2, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 0, 2, 2, 2, 2, 2, 0, 2, 2, 2, 2, 0, 2],
+            [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
+            [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+        ]
+        self.cell_height = pacman.size
+        self.cell_width = pacman.size
+        self.path_color = screen.cenario_color()
+        self.back_color = screen.background_color()
+
+    def fill_columns(self):
+        pass
+
+    def fill_row(self,row_index,row):
+        for row_index, row in enumerate(self.matrix):
+            for column_index, column in enumerate(row):
+                x = column_index * self.cell_height
+                y = row_index *  self.cell_width
+                if column == 2:
+                    pygame.draw.rect(self.surface,self.path_color,(x,y,self.cell_height,self.cell_width),0)
+                elif column == 0:
+                    pygame.draw.rect(self.surface,self.back_color,(x,y,self.cell_height,self.cell_width),0)
+
     
+    def fill_matrix(self):
+        for row_index, row in enumerate(self.matrix):
+            self.fill_row(row_index,row)
 
 
+
+
+# Criando a classe pra desenhar o PacMan
 class PacMan():
-    def __init__(self,size,screen,surface,color):
-        self.size = size
+    def __init__(self,screen,surface,color):
+        self.size = screen.height // 28
         self.x_center = screen.pacman_center_x()
         self.y_center = screen.pacman_center_y()
         self.background_color = screen.background_color()
         self.screen = screen
         self.surface = surface
         self.color = color
-        self.radius = int(size / 2)
-        self.velocity_x = 0.4
-        self.velocity_y = 0.4
+        self.radius = int(self.size / 2)
+        self.velocity_x = 0
+        self.velocity_y = 0
         self.column = 1
         self.line = 1
+# Função para capturar os movimentos 
+    def get_events(self,events):
+        events = events
+        for e in events:
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_RIGHT:
+                    self.velocity_x = 1
+                elif e.key == pygame.K_LEFT:
+                    self.velocity_x = -1
+                elif e.key == pygame.K_UP:
+                    self.velocity_y = -1
+                elif e.key == pygame.K_DOWN:
+                    self.velocity_y = 1
+            elif e.type == pygame.KEYUP:
+                if e.key == pygame.K_RIGHT:
+                    self.velocity_x = 0
+                elif e.key == pygame.K_LEFT:
+                    self.velocity_x = 0
+                elif e.key == pygame.K_UP:
+                    self.velocity_y = 0
+                elif e.key == pygame.K_DOWN:
+                    self.velocity_y = 0
 
     def movement_rules(self):
         self.column += self.velocity_x
@@ -54,16 +149,6 @@ class PacMan():
         self.x_center = int(self.column * self.matrix_size + self.radius)
         self.y_center = int(self.line * self.matrix_size)
 
-        if self.x_center + self.radius > screen.width:
-            self.velocity_x -= 0.4
-
-        if self.x_center - self.radius < 0:
-            self.velocity_x += 0.4
-        if self.y_center + self.radius > screen.height:
-            self.velocity_y -= 0.4
-
-        if self.y_center - self.radius < 0:
-            self.velocity_y += 0.4
            
     def draw_circle(self):
         surface = self.surface
@@ -98,17 +183,26 @@ class PacMan():
         eye = pacman.draw_small_circle()
         return body,mounth,eye
 
+# Executando o PacMan
 if __name__ =='__main__':
-    screen = create_screen(800,600,(0,0,0))
+    screen = Screen(1000,1000,(0,0,255))
     surface = screen.create_surface()
-    pacman = PacMan(50,screen,surface,(255,255,0))
+    pacman = PacMan(screen,surface,(255,255,0))
+    cenario = Cenario(screen,surface,pacman)
+
     while True:
         pacman.movement_rules()
-        surface.fill((0,0,0))
+        surface.fill(screen.cenario_color())
+        cenario.fill_matrix()
         pacman.draw_pacman()
         pygame.display.update()
         pygame.time.delay(100)
-        
-        for e in pygame.event.get():
+        events = pygame.event.get()
+        for e in events:
             if e.type == pygame.QUIT:
                 exit()
+        pacman.get_events(events)
+        
+
+        
+                    
