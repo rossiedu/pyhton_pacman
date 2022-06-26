@@ -47,6 +47,7 @@ class Cenario():
         self.screen = screen
         self. surface = surface
         self.pacman = pacman
+        self.size = screen.height // pacman.size
         self.matrix = [
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
             [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
@@ -78,8 +79,6 @@ class Cenario():
             [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
         ]
-        self.cell_height = pacman.size
-        self.cell_width = pacman.size
         self.path_color = screen.cenario_color()
         self.back_color = screen.background_color()
 
@@ -89,12 +88,12 @@ class Cenario():
     def fill_row(self,row_index,row):
         for row_index, row in enumerate(self.matrix):
             for column_index, column in enumerate(row):
-                x = column_index * self.cell_height
-                y = row_index *  self.cell_width
+                x = column_index * self.size - (pacman.radius )
+                y = row_index *  self.size - (pacman.radius )
                 if column == 2:
-                    pygame.draw.rect(self.surface,self.path_color,(x,y,self.cell_height,self.cell_width),0)
+                    pygame.draw.rect(self.surface,self.path_color,(x,y, self.size, self.size),0)
                 elif column == 0:
-                    pygame.draw.rect(self.surface,self.back_color,(x,y,self.cell_height,self.cell_width),0)
+                    pygame.draw.rect(self.surface,self.back_color,(x, y, self.size,self.size),0)
 
     
     def fill_matrix(self):
@@ -107,7 +106,7 @@ class Cenario():
 # Criando a classe pra desenhar o PacMan
 class PacMan():
     def __init__(self,screen,surface,color):
-        self.size = screen.height // 28
+        self.size = screen.height // 29
         self.x_center = screen.pacman_center_x()
         self.y_center = screen.pacman_center_y()
         self.background_color = screen.background_color()
@@ -125,13 +124,13 @@ class PacMan():
         for e in events:
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_RIGHT:
-                    self.velocity_x = 1
+                    self.velocity_x = 0.6
                 elif e.key == pygame.K_LEFT:
-                    self.velocity_x = -1
+                    self.velocity_x = -0.6
                 elif e.key == pygame.K_UP:
-                    self.velocity_y = -1
+                    self.velocity_y = -0.6
                 elif e.key == pygame.K_DOWN:
-                    self.velocity_y = 1
+                    self.velocity_y = 0.6
             elif e.type == pygame.KEYUP:
                 if e.key == pygame.K_RIGHT:
                     self.velocity_x = 0
@@ -185,7 +184,7 @@ class PacMan():
 
 # Executando o PacMan
 if __name__ =='__main__':
-    screen = Screen(1000,1000,(0,0,255))
+    screen = Screen(800,800,(0,0,0))
     surface = screen.create_surface()
     pacman = PacMan(screen,surface,(255,255,0))
     cenario = Cenario(screen,surface,pacman)
@@ -196,7 +195,7 @@ if __name__ =='__main__':
         cenario.fill_matrix()
         pacman.draw_pacman()
         pygame.display.update()
-        pygame.time.delay(100)
+        pygame.time.delay(80)
         events = pygame.event.get()
         for e in events:
             if e.type == pygame.QUIT:
